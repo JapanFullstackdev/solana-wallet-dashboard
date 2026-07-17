@@ -1,0 +1,33 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  wallet    String   @unique
+  hedges    Hedge[]
+  createdAt DateTime @default(now())
+}
+
+model Hedge {
+  id          String   @id @default(cuid())
+
+  userId      String
+  user        User @relation(fields: [userId], references: [id])
+
+  marketId    String
+  marketName  String
+
+  amount      Float
+  entryPrice  Float
+  currentPnl  Float @default(0)
+
+  status      String @default("OPEN")
+
+  createdAt   DateTime @default(now())
+}
